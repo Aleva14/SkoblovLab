@@ -1,32 +1,34 @@
+
 class Matrix():
     def __init__(self, data):
-        for i in data:
-            if (type(i) != list) or (len(i) != len(data)):
+        for row in data:
+            if (not isinstance(row, list)) or (len(row) != len(data)):
                 raise ValueError('Wrong argument')
         self.data = data
-        self.N = len(data)
 
+    def __len__(self):
+        return len(self.data)
 
     def __add__(self, other):
 
-        if other.N != self.N:
+        if len(other) != len(self):
             raise ValueError('Different dimensions')
 
         result = []
-        for i in range(0, self.N):
-            result.append([self.data[i][j] + other.data[i][j] for j in range(0, self.N)])
+        for i in range(0, len(self)):
+            result.append([self.data[i][j] + other.data[i][j] for j in range(0, len(self))])
         return Matrix(result)
 
     def transposed(self):
-        result = [[] for i in range(0, self.N)]
-        for i in range(0, self.N):
-           for j in range(0, self.N):
+        result = [[] for i in range(0, len(self))]
+        for i in range(0, len(self)):
+           for j in range(0, len(self)):
                result[j].append(self.data[i][j])
         return Matrix(result)
 
     def line_product(self, a, b):
         result = 0
-        for i in range(0, self.N):
+        for i in range(0, len(self)):
             result += a[i] * b[i]
         return result
 
@@ -35,23 +37,23 @@ class Matrix():
             a = self.data
             b = other.transposed().data
             result = []
-            for i in range(0, self.N):
+            for i in range(0, len(self)):
                 result.append([])
-                for j in range(0, self.N):
+                for j in range(0, len(self)):
                     result[i].append(self.line_product(a[i], b[j]))
             return Matrix(result)
 
-        else:
-            result = Matrix(self.data)
-            for i in range(0, self.N):
-                for j in range(0, self.N):
-                    result.data[i][j] *= other
-            return result
+
+        result = Matrix(self.data)
+        for i in range(0, len(self)):
+            for j in range(0, len(self)):
+                result.data[i][j] *= other
+        return result
 
     def __repr__(self):
         s = ''
         for i in self.data:
-            s += ', '.join(map(str, i)) + '\n'
+            s += str(i) + '\n'
         return s
 
 
